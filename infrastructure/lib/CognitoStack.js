@@ -53,6 +53,10 @@ export default class CognitoStack extends sst.Stack {
       value: userPool.userPoolId,
       exportName: app.logicalPrefixedName("UserPoolId"),
     });
+    new CfnOutput(this, "UserPoolArn", {
+      value: userPool.userPoolArn,
+      exportName: app.logicalPrefixedName("TableArn"),
+    });
     new CfnOutput(this, "UserPoolClientId", {
       value: userPoolClient.userPoolClientId,
     });

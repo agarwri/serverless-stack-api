@@ -135,7 +135,7 @@ functions:
     events:
       - http:
           path: listusers
-          method: post
+          method: get
           cors: true
           authorizer: aws_iam
 
@@ -147,7 +147,7 @@ functions:
     events:
       - http:
           path: listnotesforuser/{userPoolUserId}
-          method: post
+          method: get
           cors: true
           authorizer: aws_iam
 

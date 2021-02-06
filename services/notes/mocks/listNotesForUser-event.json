@@ -1,5 +1,5 @@
 {
-  "body": "{\"content\":\"hello world this is another new note that should get inserted with the user pool user id.\",\"attachment\":\"another-one.jpg\"}",
+  "body": "{\"userName\":\"Ritika\",\"userPoolUserId\":\"0ccb52ce-9ba3-4481-bdeb-7cf3406a6944\"}",
   "requestContext": {
     "identity": {
       "cognitoIdentityId": "us-east-1:9c5c1f56-c787-4235-89d2-2cd9b45a9f22",

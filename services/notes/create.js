@@ -4,6 +4,8 @@ import dynamoDb from "./libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
+  const authProvider = event.requestContext.identity.cognitoAuthenticationProvider;
+  const parts = authProvider.split(':');
   const params = {
     TableName: process.env.tableName,
     // 'Item' contains the attributes of the item to be created
@@ -16,6 +18,7 @@ export const main = handler(async (event, context) => {
     // - 'createdAt': current Unix timestamp
     Item: {
       userId: event.requestContext.identity.cognitoIdentityId,
+      userPoolUserId: parts[parts.length - 1],
       noteId: uuid.v1(),
       content: data.content,
       attachment: data.attachment,

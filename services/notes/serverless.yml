@@ -24,11 +24,10 @@ provider:
 
   # These environment variables are made available to our functions
   # under process.env.
-  # These environment variables are made available to our functions
-  # under process.env.
   environment:
     stripeSecretKey: ${env:STRIPE_SECRET_KEY}
     tableName: !ImportValue '${self:custom.sstApp}-TableName'
+    userPoolId: !ImportValue '${self:custom.sstApp}-UserPoolId'
 
   iamRoleStatements:
     - Effect: Allow
@@ -44,6 +43,13 @@ provider:
       # the specific table for the stage
       Resource:
         - !ImportValue '${self:custom.sstApp}-TableArn'
+    - Effect: Allow
+      Action:
+        - cognito-idp:ListUsers
+      # Restrict our IAM role permissions to
+      # the specific table for the stage
+      Resource:
+        - !ImportValue '${self:custom.sstApp}-UserPoolId'
 # Create our resources with separate CloudFormation templates
 # Create our resources with separate CloudFormation templates
 
@@ -117,6 +123,30 @@ functions:
     events:
       - http:
           path: billing
+          method: post
+          cors: true
+          authorizer: aws_iam
+
+  listUsers:
+    # Defines an HTTP API endpoint that calls the main function in listUsers.js
+    # - path: url path is /billing
+    # - method: POST request
+    handler: listUsers.main
+    events:
+      - http:
+          path: listusers
+          method: post
+          cors: true
+          authorizer: aws_iam
+
+  listNotesForUser:
+    # Defines an HTTP API endpoint that calls the main function in listNotesForUser.js
+    # - path: url path is /listnotesforuser
+    # - method: POST request
+    handler: listNotesForUser.main
+    events:
+      - http:
+          path: listnotesforuser/{userPoolUserId}
           method: post
           cors: true
           authorizer: aws_iam

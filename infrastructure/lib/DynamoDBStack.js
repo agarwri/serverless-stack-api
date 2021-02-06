@@ -14,6 +14,18 @@ export default class DynamoDBStack extends sst.Stack {
       partitionKey: { name: "userId", type: dynamodb.AttributeType.STRING },
     });
 
+    table.addGlobalSecondaryIndex({
+      indexName: 'notes-by-user-pool-user-id',
+      partitionKey: {
+        name: 'userPoolUserId',
+        type: dynamodb.AttributeType.STRING
+      },
+      sortKey: {
+        name: 'noteId',
+        type: dynamodb.AttributeType.STRING
+      }
+    });
+
     // Output values
     new CfnOutput(this, "TableName", {
       value: table.tableName,
@@ -23,5 +35,6 @@ export default class DynamoDBStack extends sst.Stack {
       value: table.tableArn,
       exportName: app.logicalPrefixedName("TableArn"),
     });
+
   }
 }

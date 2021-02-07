@@ -134,7 +134,7 @@ functions:
     handler: listUsers.main
     events:
       - http:
-          path: listusers
+          path: users
           method: get
           cors: true
           authorizer: aws_iam
@@ -146,7 +146,7 @@ functions:
     handler: listNotesForUser.main
     events:
       - http:
-          path: listnotesforuser/{userPoolUserId}
+          path: users/{userPoolUserId}
           method: get
           cors: true
           authorizer: aws_iam

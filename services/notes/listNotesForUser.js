@@ -5,7 +5,7 @@ export const main = handler(async (event, context) => {
   //const data = JSON.parse(event.body);
   const params = {
     TableName: process.env.tableName,
-    IndexName: 'notes-by-user-pool-user-id',
+    IndexName: process.env.indexName,
     // 'KeyConditionExpression' defines the condition for the query
     // - 'userId = :userId': only return items with matching 'userId'
     //   partition key

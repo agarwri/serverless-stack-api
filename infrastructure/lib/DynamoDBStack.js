@@ -14,8 +14,10 @@ export default class DynamoDBStack extends sst.Stack {
       partitionKey: { name: "userId", type: dynamodb.AttributeType.STRING },
     });
 
+    const indexName = 'notes-by-user-pool-user-id';
+
     table.addGlobalSecondaryIndex({
-      indexName: 'notes-by-user-pool-user-id',
+      indexName: indexName,
       partitionKey: {
         name: 'userPoolUserId',
         type: dynamodb.AttributeType.STRING
@@ -26,7 +28,6 @@ export default class DynamoDBStack extends sst.Stack {
       }
     });
 
-    const index = table.GlobalSecondaryIndexes[0];
 
     // Output values
     new CfnOutput(this, "TableName", {
@@ -39,11 +40,11 @@ export default class DynamoDBStack extends sst.Stack {
     });
     // Output values
     new CfnOutput(this, "IndexName", {
-      value: index.IndexeName,
+      value: indexName,
       exportName: app.logicalPrefixedName("IndexName"),
     });
     new CfnOutput(this, "IndexArn", {
-      value: index.IndexArn,
+      value: table.tableArn + "/index/" + indexName,
       exportName: app.logicalPrefixedName("IndexArn"),
     });
 

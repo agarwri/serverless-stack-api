@@ -26,6 +26,8 @@ export default class DynamoDBStack extends sst.Stack {
       }
     });
 
+    const index = table.GlobalSecondaryIndexes[0];
+
     // Output values
     new CfnOutput(this, "TableName", {
       value: table.tableName,
@@ -34,6 +36,15 @@ export default class DynamoDBStack extends sst.Stack {
     new CfnOutput(this, "TableArn", {
       value: table.tableArn,
       exportName: app.logicalPrefixedName("TableArn"),
+    });
+    // Output values
+    new CfnOutput(this, "IndexName", {
+      value: index.IndexeName,
+      exportName: app.logicalPrefixedName("IndexName"),
+    });
+    new CfnOutput(this, "IndexArn", {
+      value: index.IndexArn,
+      exportName: app.logicalPrefixedName("IndexArn"),
     });
 
   }

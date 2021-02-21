@@ -62,18 +62,18 @@ export default class CognitoStack extends sst.Stack {
 
     const defaultUserPoolGroup = new cognito.CfnUserPoolGroup(this, "DefaultUserPoolGroup", {
       userPoolId: userPool.userPoolId,
-      description?: "default user group",
-      groupName?: "DefaultUsers",
-      precedence?: 1,
-      roleArn?: authenticatedRoles.role.roleArn,
+      description: "default user group",
+      groupName: "DefaultUsers",
+      precedence: 1,
+      roleArn: authenticatedRoles.role.roleArn,
     });
 
     const adminUserPoolGroup = new cognito.CfnUserPoolGroup(this, "AdminUserPoolGroup", {
       userPoolId: userPool.userPoolId,
-      description?: "admin user group",
-      groupName?: "AdminUsers",
-      precedence?: 0, 
-      roleArn?: authenticatedRoles.adminRole.roleArn,
+      description: "admin user group",
+      groupName: "AdminUsers",
+      precedence: 0,
+      roleArn: authenticatedRoles.adminRole.roleArn,
     });
 
     // Export values

@@ -66,6 +66,8 @@ export default class CognitoAuthRoles extends cdk.Construct {
       })
     );
 
+    const providerUrl = userPool.userPoolProviderUrl;
+
     new cognito.CfnIdentityPoolRoleAttachment(
       this,
       "IdentityPoolRoleAttachment",
@@ -75,7 +77,7 @@ export default class CognitoAuthRoles extends cdk.Construct {
           authenticated: this.role.roleArn,
         },
         roleMappings: {
-          userPool.userPoolProviderUrl: {
+          providerUrl: {
             type: "Token"
           }
         }

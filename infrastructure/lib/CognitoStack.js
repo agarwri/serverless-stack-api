@@ -35,6 +35,7 @@ export default class CognitoStack extends sst.Stack {
 
     const authenticatedRoles = new CognitoAuthRoles(this, "CognitoAuthRole", {
       identityPool,
+      userPool,
     });
 
     authenticatedRoles.role.addToPolicy(

@@ -33,11 +33,11 @@ export default class CognitoStack extends sst.Stack {
       ],
     });
 
-    const authenticatedRole = new CognitoAuthRole(this, "CognitoAuthRole", {
+    const authenticatedRoles = new CognitoAuthRoles(this, "CognitoAuthRole", {
       identityPool,
     });
 
-    authenticatedRole.role.addToPolicy(
+    authenticatedRoles.role.addToPolicy(
       // IAM policy granting users permission to a specific folder in the S3 bucket
       new iam.PolicyStatement({
         actions: ["s3:*"],
@@ -47,6 +47,34 @@ export default class CognitoStack extends sst.Stack {
         ],
       })
     );
+
+
+    authenticatedRoles.adminRole.addToPolicy(
+      // IAM policy granting admin users permission to all folders in the S3 bucket
+      new iam.PolicyStatement({
+        actions: ["s3:*"],
+        effect: iam.Effect.ALLOW,
+        resources: [
+          bucketArn + "/private/*",
+        ],
+      })
+    );
+
+    const defaultUserPoolGroup = new cognito.CfnUserPoolGroup(this, "DefaultUserPoolGroup", {
+      userPoolId: userPool.userPoolId,
+      description?: "default user group",
+      groupName?: "DefaultUsers",
+      precedence?: 1,
+      roleArn?: authenticatedRoles.role.roleArn,
+    });
+
+    const adminUserPoolGroup = new cognito.CfnUserPoolGroup(this, "AdminUserPoolGroup", {
+      userPoolId: userPool.userPoolId,
+      description?: "admin user group",
+      groupName?: "AdminUsers",
+      precedence?: 0, 
+      roleArn?: authenticatedRoles.adminRole.roleArn,
+    });
 
     // Export values
     new CfnOutput(this, "UserPoolId", {
@@ -66,6 +94,10 @@ export default class CognitoStack extends sst.Stack {
     new CfnOutput(this, "AuthenticatedRoleName", {
       value: authenticatedRole.role.roleName,
       exportName: app.logicalPrefixedName("CognitoAuthRole"),
+    });
+    new CfnOutput(this, "AdminAuthenticatedRoleName", {
+      value: authenticatedRole.adminRole.roleName,
+      exportName: app.logicalPrefixedName("CognitoAdminAuthRole"),
     });
   }
 }

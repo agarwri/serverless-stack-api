@@ -77,7 +77,7 @@ export default class CognitoAuthRoles extends cdk.Construct {
           authenticated: this.role.roleArn,
         },
         roleMappings: {
-          providerUrl: {
+          'cognito-idp.us-east-1.amazonaws.com/us-east-1_Utd19tkeo:7bdqkuaacgh6pln1uq19h68ue3': {
             type: "Token"
           }
         }

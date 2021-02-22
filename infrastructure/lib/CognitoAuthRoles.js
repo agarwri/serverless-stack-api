@@ -78,8 +78,8 @@ export default class CognitoAuthRoles extends cdk.Construct {
         roleMappings: {
           cognitoProvider: {
             IdentityProvider: userPool.userPoolProviderUrl,
-            Type: Token,
-            AmbiguousRoleResolution: Deny,
+            Type: "Token",
+            AmbiguousRoleResolution: "Deny",
           }
         }
       }

@@ -66,7 +66,7 @@ export default class CognitoAuthRoles extends cdk.Construct {
       })
     );
 
-    providerUrl = userPool.userPoolProviderUrl + ":" + userPoolClient.userPoolClientId;
+    const providerUrl = userPool.userPoolProviderUrl + ":" + userPoolClient.userPoolClientId;
 
     new cognito.CfnIdentityPoolRoleAttachment(
       this,

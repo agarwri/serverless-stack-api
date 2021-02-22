@@ -10,7 +10,7 @@ export default class CognitoAuthRoles extends cdk.Construct {
   constructor(scope, id, props) {
     super(scope, id);
 
-    const { identityPool, userPool } = props;
+    const { identityPool, userPool, userPoolClient } = props;
 
     // IAM role used for authenticated users
     this.role = new iam.Role(this, "CognitoDefaultAuthenticatedRole", {
@@ -77,7 +77,7 @@ export default class CognitoAuthRoles extends cdk.Construct {
         },
         roleMappings: {
           cognitoProvider: {
-            identityProvider: userPool.userPoolProviderUrl,
+            identityProvider: userPool.userPoolProviderUrl, + ":" + userPoolClient.userPoolClientId,
             type: "Token",
             ambiguousRoleResolution: "Deny",
           }

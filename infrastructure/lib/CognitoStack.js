@@ -1,5 +1,7 @@
 import { CfnOutput } from "@aws-cdk/core";
 import * as iam from "@aws-cdk/aws-iam";
+import * as lambda from "@aws-cdk/aws-lambda";
+import * as path from 'path';
 import * as cognito from "@aws-cdk/aws-cognito";
 import * as sst from "@serverless-stack/resources";
 import CognitoAuthRoles from "./CognitoAuthRoles";
@@ -17,6 +19,7 @@ export default class CognitoStack extends sst.Stack {
       autoVerify: { email: true }, // Verify email addresses by sending a verification code
       signInAliases: { email: true }, // Set email as an alias
     });
+
 
     const userPoolClient = new cognito.UserPoolClient(this, "UserPoolClient", {
       userPool,
@@ -77,6 +80,26 @@ export default class CognitoStack extends sst.Stack {
       precedence: 0,
       roleArn: authenticatedRoles.adminRole.roleArn,
     });
+
+    const postConfirmationFn = new lambda.Function(this, 'postConfirmationFn', {
+      runtime: lambda.Runtime.NODEJS_12_X,
+      handler: 'index.handler',
+      code: lambda.Code.fromInline(`
+        exports.handler = async (event, context, callback) => {
+          const params = {
+            GroupName: "DefaultUsers",
+            UserPoolId: event.userPoolId,
+            Username: event.userName
+          };
+          CognitoIdentityServiceProvider.adminAddUserToGroup(params)
+            .promise()
+            .then(res => callback(null, event))
+            .catch(err => callback(err, event));
+        };
+      `),
+    });
+
+    userPool.addTrigger(cognito.UserPoolOperation.POST_CONFIRMATION, postConfirmationFn);
 
     // Export values
     new CfnOutput(this, "UserPoolId", {

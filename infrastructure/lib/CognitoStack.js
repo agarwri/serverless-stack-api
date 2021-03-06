@@ -85,7 +85,6 @@ export default class CognitoStack extends sst.Stack {
       runtime: lambda.Runtime.NODEJS_12_X,
       handler: 'index.handler',
       code: lambda.Code.fromInline(`
-        const aws = require('aws-sdk');
         exports.handler = async (event, context, callback) => {
           const cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider();
           const params = {

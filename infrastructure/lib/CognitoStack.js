@@ -60,7 +60,7 @@ export default class CognitoStack extends sst.Stack {
         actions: ["s3:*"],
         effect: iam.Effect.ALLOW,
         resources: [
-          bucketArn + "/private/*",
+          bucketArn + "/private/*/*",
         ],
       })
     );
@@ -85,13 +85,15 @@ export default class CognitoStack extends sst.Stack {
       runtime: lambda.Runtime.NODEJS_12_X,
       handler: 'index.handler',
       code: lambda.Code.fromInline(`
+        const aws = require('aws-sdk');
         exports.handler = async (event, context, callback) => {
+          const cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider();
           const params = {
             GroupName: "DefaultUsers",
             UserPoolId: event.userPoolId,
             Username: event.userName
           };
-          CognitoIdentityServiceProvider.adminAddUserToGroup(params)
+          cognitoidentityserviceprovider.adminAddUserToGroup(params)
             .promise()
             .then(res => callback(null, event))
             .catch(err => callback(err, event));

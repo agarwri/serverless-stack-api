@@ -84,26 +84,7 @@ export default class CognitoStack extends sst.Stack {
     const postConfirmationFn = new lambda.Function(this, 'postConfirmationFn', {
       runtime: lambda.Runtime.NODEJS_12_X,
       handler: 'index.handler',
-      code: lambda.Code.fromInline(`
-        exports.handler = async (event, context, callback) => {
-          console.log("anything");
-          const AWS = require('aws-sdk');
-          console.log("made it past the require");
-          const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
-          console.log("initialized the service provider");
-          const params = {
-            GroupName: "DefaultUsers",
-            UserPoolId: event.userPoolId,
-            Username: event.userName
-          };
-          console.log("set up params");
-          cognitoidentityserviceprovider.adminAddUserToGroup(params)
-            .promise()
-            .then(res => callback(null, event))
-            .catch(err => callback(err, event));
-          console.log("added user to group");
-        };
-      `),
+      code: lambda.Code.fromAsset(`${path.resolve(__dirname)}/lambda`)
     });
 
     userPool.addTrigger(cognito.UserPoolOperation.POST_CONFIRMATION, postConfirmationFn);

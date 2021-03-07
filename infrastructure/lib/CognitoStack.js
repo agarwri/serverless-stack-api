@@ -88,17 +88,20 @@ export default class CognitoStack extends sst.Stack {
         exports.handler = async (event, context, callback) => {
           console.log("anything");
           const AWS = require('aws-sdk');
+          console.log("made it past the require");
           const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
+          console.log("initialized the service provider");
           const params = {
             GroupName: "DefaultUsers",
             UserPoolId: event.userPoolId,
             Username: event.userName
           };
-          console.log(params);
+          console.log("set up params");
           cognitoidentityserviceprovider.adminAddUserToGroup(params)
             .promise()
             .then(res => callback(null, event))
             .catch(err => callback(err, event));
+          console.log("added user to group");
         };
       `),
     });

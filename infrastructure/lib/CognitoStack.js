@@ -93,6 +93,7 @@ export default class CognitoStack extends sst.Stack {
             UserPoolId: event.userPoolId,
             Username: event.userName
           };
+          console.log(params);
           cognitoidentityserviceprovider.adminAddUserToGroup(params)
             .promise()
             .then(res => callback(null, event))

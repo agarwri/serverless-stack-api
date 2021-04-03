@@ -81,19 +81,32 @@ export default class CognitoStack extends sst.Stack {
       roleArn: authenticatedRoles.adminRole.roleArn,
     });
 
+    const postConfirmationRole = new iam.Role(this, 'postConfirmationRole', {
+      roleName: 'postConfirmationRole',
+      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSLambdaBasicExecutionRole")
+      ]
+    });
+
     const postConfirmationFn = new lambda.Function(this, 'postConfirmationFn', {
       runtime: lambda.Runtime.NODEJS_12_X,
       handler: 'index.handler',
-      code: lambda.Code.fromAsset(`${path.resolve(__dirname)}/lambda`)
+      code: lambda.Code.fromAsset(`${path.resolve(__dirname)}/lambda`),
+      role: postConfirmationRole
     });
 
-    postConfirmationFn.role.addToPolicy(new iam.PolicyStatement({
+
+    postConfirmationFn.addToRolePolicy(new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       actions: [ 'cognito-idp:*' ],
-      resources: [ userPool.userPoolArn ]
+      resources: [ '*' ]
     }));
 
+
     userPool.addTrigger(cognito.UserPoolOperation.POST_CONFIRMATION, postConfirmationFn);
+
+
 
     // Export values
     new CfnOutput(this, "UserPoolId", {

@@ -87,6 +87,12 @@ export default class CognitoStack extends sst.Stack {
       code: lambda.Code.fromAsset(`${path.resolve(__dirname)}/lambda`)
     });
 
+    postConfirmationFn.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: [ 'cognito-idp:*' ],
+      resources: [ userPool.userPoolArn ]
+    }));
+
     userPool.addTrigger(cognito.UserPoolOperation.POST_CONFIRMATION, postConfirmationFn);
 
     // Export values
